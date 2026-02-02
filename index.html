@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Group Chat • TeachMore (Local)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.css">
+  <style>
+    :root {
+      --primary: #25D366;
+      --primary-dark: #128C7E;
+      --bg: #E5DDD5;
+      --chat-bg: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+      --msg-bg: #DCF8C6;
+      --msg-bg-incoming: #FFFFFF;
+      --msg-bg-admin: #FFEFD5;
+      --text: #111;
+      --time: #666;
+      --border: #ddd;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      background-image: var(--chat-bg);
+      background-repeat: repeat;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--text);
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: var(--primary);
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .header .back { font-size: 1.4rem; cursor: pointer; }
+    .header .avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #075E54; display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 1.1rem;
+    }
+    .header .info { flex: 1; }
+    .header h2 { font-size: 1.1rem; margin-bottom: 3px; }
+    .header p { font-size: 0.8rem; opacity: 0.9; }
+    .chat-area {
+      flex: 1; overflow-y: auto; padding: 20px 12px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .message {
+      max-width: 75%; margin-bottom: 6px; position: relative;
+      display: flex; flex-direction: column;
+    }
+    .message.outgoing { align-self: flex-end; }
+    .message.incoming { align-self: flex-start; }
+    .message.admin { align-self: center; max-width: 90%; }
+    .bubble {
+      padding: 8px 12px; border-radius: 7.5px; line-height: 1.4;
+      font-size: 0.95rem; position: relative;
+    }
+    .bubble.outgoing { background: var(--msg-bg); border-bottom-right-radius: 2px; }
+    .bubble.incoming { background: var(--msg-bg-incoming); border-bottom-left-radius: 2px; }
+    .bubble.admin { background: var(--msg-bg-admin); border-radius: 7.5px; text-align: center; }
+    .bubble img { max-width: 300px; border-radius: 7.5px; display: block; }
+    .time {
+      font-size: 0.68rem; color: var(--time); margin-top: 3px;
+      display: flex; align-items: center; justify-content: flex-end; gap: 4px;
+    }
+    .name {
+      font-weight: 600; font-size: 0.85rem; margin-bottom: 4px;
+      color: #006a4e; display: block;
+    }
+    .delete-btn {
+      cursor: pointer; color: #999; font-size: 0.8rem; margin-left: 8px;
+      visibility: hidden;
+    }
+    .message:hover .delete-btn { visibility: visible; }
+    .input-area {
+      background: #F0F0F0; padding: 10px 12px; display: flex;
+      align-items: center; gap: 8px; border-top: 1px solid var(--border);
+    }
+    .input-area input[type="text"] {
+      flex: 1; padding: 12px 16px; border: none; border-radius: 25px;
+      background: white; font-size: 0.95rem; outline: none;
+    }
+    .emoji-btn, .image-btn {
+      background: none; border: none; font-size: 1.2rem;
+      cursor: pointer; color: #666;
+    }
+    .input-area button {
+      width: 42px; height: 42px; border-radius: 50%; border: none;
+      background: var(--primary); color: white; font-size: 1.2rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .input-area button:hover { background: var(--primary-dark); }
+    .emoji-picker {
+      position: absolute; bottom: 70px; left: 10px; z-index: 100; display: none;
+    }
+    .emoji-picker.show { display: block; }
+    .status {
+      text-align: center; font-size: 0.8rem; color: #555; padding: 8px;
+      background: rgba(255,255,255,0.6); margin: 10px auto;
+      border-radius: 8px; max-width: 280px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="back"><i class="fas fa-arrow-left"></i></div>
+    <div class="avatar">TM</div>
+    <div class="info">
+      <h2>TeachMore Group (Local)</h2>
+      <p>Local storage only • same browser only</p>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="status">This chat is saved only in your browser (localStorage).<br>No internet / no sharing between devices.</div>
+  </div>
+
+  <div class="input-area">
+    <button class="emoji-btn" id="emojiBtn"><i class="fas fa-smile"></i></button>
+    <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off"/>
+    <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+    <div class="emoji-picker" id="emojiPicker"></div>
+  </div>
+</div>
+
+<script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"></script>
+
+<script>
+// ────────────────────────────────────────────────
+//  LOCAL STORAGE CHAT – no server needed
+// ────────────────────────────────────────────────
+
+const STORAGE_KEY = 'teachmore_local_chat_messages';
+const MAX_MESSAGES = 200; // prevent unlimited growth
+
+let messages = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+let userName = localStorage.getItem('teachmore_username');
+let isAdmin = localStorage.getItem('teachmore_isadmin') === 'true';
+
+if (!userName) {
+  userName = prompt('Enter your display name:')?.trim() || ('Guest_' + Math.floor(Math.random()*900+100));
+  localStorage.setItem('teachmore_username', userName);
+}
+
+if (!isAdmin) {
+  const pw = prompt('Admin password? (leave blank if normal user)');
+  if (pw === 'teachmore2026') {  // ← change this password
+    isAdmin = true;
+    localStorage.setItem('teachmore_isadmin', 'true');
+    userName = 'Admin';
+    localStorage.setItem('teachmore_username', 'Admin');
+  }
+}
+
+const chatArea = document.getElementById('chatArea');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const emojiBtn = document.getElementById('emojiBtn');
+const emojiPicker = document.getElementById('emojiPicker');
+
+// Emoji picker setup
+const picker = document.createElement('emoji-picker');
+emojiPicker.appendChild(picker);
+
+emojiBtn.addEventListener('click', () => {
+  emojiPicker.classList.toggle('show');
+});
+
+picker.addEventListener('emoji-click', e => {
+  messageInput.value += e.detail.unicode;
+  messageInput.focus();
+});
+
+// ────────────────────────────────────────────────
+function saveMessages() {
+  // Keep only last MAX_MESSAGES
+  if (messages.length > MAX_MESSAGES) {
+    messages = messages.slice(-MAX_MESSAGES);
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+}
+
+function renderAllMessages() {
+  chatArea.innerHTML = '';
+  const status = document.createElement('div');
+  status.className = 'status';
+  status.innerHTML = 'This chat is saved only in your browser (localStorage).<br>No internet / no sharing between devices.';
+  chatArea.appendChild(status);
+
+  messages.forEach(msg => {
+    addMessageToUI(msg);
+  });
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function addMessageToUI(msg) {
+  const isOutgoing = msg.sender === userName;
+  const isAdminMsg = msg.sender === 'Admin';
+
+  const div = document.createElement('div');
+  div.classList.add('message');
+  if (isAdminMsg) div.classList.add('admin');
+  else if (isOutgoing) div.classList.add('outgoing');
+  else div.classList.add('incoming');
+
+  let html = '';
+  if (!isOutgoing && msg.sender !== 'Admin') {
+    html += `<span class="name">${msg.sender}</span>`;
+  }
+
+  const bubbleClass = `bubble \( {isOutgoing ? 'outgoing' : 'incoming'} \){isAdminMsg ? ' admin' : ''}`;
+
+  if (msg.type === 'image') {
+    html += `<div class="\( {bubbleClass}"><img src=" \){msg.content}" alt="image"/></div>`;
+  } else {
+    html += `<div class="\( {bubbleClass}"> \){msg.content}</div>`;
+  }
+
+  html += `<span class="time">${formatTime(msg.timestamp)}</span>`;
+
+  if (isOutgoing || isAdmin) {
+    html += `<i class="fas fa-trash delete-btn" onclick="deleteMessage('${msg.id}')"></i>`;
+  }
+
+  div.innerHTML = html;
+  chatArea.appendChild(div);
+}
+
+function formatTime(ts) {
+  return new Date(ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function sendMessage() {
+  const text = messageInput.value.trim();
+  if (!text) return;
+
+  const msg = {
+    id: Date.now() + '-' + Math.random().toString(36).substr(2,9),
+    type: 'text',
+    content: text,
+    sender: userName,
+    timestamp: Date.now()
+  };
+
+  messages.push(msg);
+  saveMessages();
+  addMessageToUI(msg);
+  chatArea.scrollTop = chatArea.scrollHeight;
+
+  messageInput.value = '';
+  emojiPicker.classList.remove('show');
+}
+
+sendBtn.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+window.deleteMessage = (id) => {
+  if (!confirm('Delete this message?')) return;
+
+  const msg = messages.find(m => m.id === id);
+  if (!msg) return;
+
+  if (msg.sender === userName || isAdmin) {
+    messages = messages.filter(m => m.id !== id);
+    saveMessages();
+    renderAllMessages();
+  } else {
+    alert("You can only delete your own messages.");
+  }
+};
+
+// Initial load
+renderAllMessages();
+messageInput.focus();
+</script>
+</body>
+</html>
