@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Group Chat • WhatsApp Style with Firebase</title>
+  <title>Group Chat • TeachMore</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <!-- Emoji Picker CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.css">
   <style>
     :root {
@@ -15,29 +14,21 @@
       --chat-bg: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
       --msg-bg: #DCF8C6;
       --msg-bg-incoming: #FFFFFF;
-      --msg-bg-admin: #FFEFD5; /* Special for admin */
+      --msg-bg-admin: #FFEFD5;
       --text: #111;
       --time: #666;
       --border: #ddd;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
-      height: 100vh;
-      overflow: hidden;
       background-image: var(--chat-bg);
       background-repeat: repeat;
-      background-position: center;
+      height: 100vh;
+      overflow: hidden;
       color: var(--text);
     }
-
     .container {
       max-width: 800px;
       margin: 0 auto;
@@ -45,7 +36,6 @@
       display: flex;
       flex-direction: column;
     }
-
     .header {
       background: var(--primary);
       color: white;
@@ -54,51 +44,26 @@
       align-items: center;
       gap: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      position: relative;
-      z-index: 10;
     }
-
-    .header .back {
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
-
+    .header .back { font-size: 1.4rem; cursor: pointer; }
     .header .avatar {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border-radius: 50%;
       background: #075E54;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 1.1rem;
     }
-
-    .header .info {
-      flex: 1;
-    }
-
-    .header h2 {
-      font-size: 1.1rem;
-      margin-bottom: 3px;
-    }
-
-    .header p {
-      font-size: 0.8rem;
-      opacity: 0.9;
-    }
-
+    .header .info { flex: 1; }
+    .header h2 { font-size: 1.1rem; margin-bottom: 3px; }
+    .header p { font-size: 0.8rem; opacity: 0.9; }
     .chat-area {
       flex: 1;
       overflow-y: auto;
       padding: 20px 12px;
-      background: transparent;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-
     .message {
       max-width: 75%;
       margin-bottom: 6px;
@@ -106,49 +71,34 @@
       display: flex;
       flex-direction: column;
     }
-
-    .message.outgoing {
-      align-self: flex-end;
-    }
-
-    .message.incoming {
-      align-self: flex-start;
-    }
-
-    .message.admin {
-      align-self: center;
-      max-width: 90%;
-    }
-
+    .message.outgoing { align-self: flex-end; }
+    .message.incoming { align-self: flex-start; }
+    .message.admin { align-self: center; max-width: 90%; }
     .bubble {
       padding: 8px 12px;
       border-radius: 7.5px;
       line-height: 1.4;
-      position: relative;
       font-size: 0.95rem;
+      position: relative;
     }
-
     .bubble.outgoing {
       background: var(--msg-bg);
       border-bottom-right-radius: 2px;
     }
-
     .bubble.incoming {
       background: var(--msg-bg-incoming);
       border-bottom-left-radius: 2px;
     }
-
     .bubble.admin {
       background: var(--msg-bg-admin);
       border-radius: 7.5px;
       text-align: center;
     }
-
     .bubble img {
       max-width: 300px;
       border-radius: 7.5px;
+      display: block;
     }
-
     .time {
       font-size: 0.68rem;
       color: var(--time);
@@ -158,12 +108,7 @@
       justify-content: flex-end;
       gap: 4px;
     }
-
-    .ticks {
-      font-size: 0.8rem;
-      color: #53bdeb; /* Blue for read */
-    }
-
+    .ticks { font-size: 0.8rem; color: #53bdeb; }
     .name {
       font-weight: 600;
       font-size: 0.85rem;
@@ -171,7 +116,6 @@
       color: #006a4e;
       display: block;
     }
-
     .delete-btn {
       cursor: pointer;
       color: #999;
@@ -179,11 +123,7 @@
       margin-left: 8px;
       visibility: hidden;
     }
-
-    .message:hover .delete-btn {
-      visibility: visible;
-    }
-
+    .message:hover .delete-btn { visibility: visible; }
     .input-area {
       background: #F0F0F0;
       padding: 10px 12px;
@@ -191,9 +131,7 @@
       align-items: center;
       gap: 8px;
       border-top: 1px solid var(--border);
-      position: relative;
     }
-
     .input-area input[type="text"] {
       flex: 1;
       padding: 12px 16px;
@@ -203,11 +141,7 @@
       font-size: 0.95rem;
       outline: none;
     }
-
-    .input-area input[type="file"] {
-      display: none;
-    }
-
+    .input-area input[type="file"] { display: none; }
     .emoji-btn, .image-btn {
       background: none;
       border: none;
@@ -215,10 +149,8 @@
       cursor: pointer;
       color: #666;
     }
-
     .input-area button {
-      width: 42px;
-      height: 42px;
+      width: 42px; height: 42px;
       border-radius: 50%;
       border: none;
       background: var(--primary);
@@ -229,23 +161,15 @@
       align-items: center;
       justify-content: center;
     }
-
-    .input-area button:hover {
-      background: var(--primary-dark);
-    }
-
+    .input-area button:hover { background: var(--primary-dark); }
     .emoji-picker {
       position: absolute;
-      bottom: 60px;
+      bottom: 70px;
       left: 10px;
       z-index: 100;
       display: none;
     }
-
-    .emoji-picker.show {
-      display: block;
-    }
-
+    .emoji-picker.show { display: block; }
     .status {
       text-align: center;
       font-size: 0.8rem;
@@ -256,17 +180,10 @@
       border-radius: 8px;
       max-width: 220px;
     }
-
     @media (max-width: 500px) {
-      .container {
-        max-width: 100%;
-      }
-      .header {
-        padding: 10px 14px;
-      }
-      .chat-area {
-        padding: 16px 10px;
-      }
+      .container { max-width: 100%; }
+      .header { padding: 10px 14px; }
+      .chat-area { padding: 16px 10px; }
     }
   </style>
 </head>
@@ -278,12 +195,12 @@
     <div class="avatar">TM</div>
     <div class="info">
       <h2>TeachMore Group</h2>
-      <p>42 participants • active now</p>
+      <p>Participants • active now</p>
     </div>
   </div>
 
   <div class="chat-area" id="chatArea">
-    <div class="status">Messages are end-to-end encrypted. No one outside this chat, not even TeachMore, can read or listen to them.</div>
+    <div class="status">Messages are end-to-end encrypted. TeachMore cannot read them.</div>
   </div>
 
   <div class="input-area">
@@ -296,214 +213,221 @@
   </div>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js"></script>
+<!-- Firebase (use latest compatible version or your own config) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-<!-- Emoji Picker JS -->
 <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"></script>
 
 <script>
-  // Firebase Configuration - Replace with your own from Firebase Console
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
+// ────────────────────────────────────────────────
+//  REPLACE WITH YOUR OWN FIREBASE CONFIG
+// ────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  authDomain: "your-project-id.firebaseapp.com",
+  databaseURL: "https://your-project-id-default-rtdb.firebaseio.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project-id.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:xxxxxxxxxxxxxxxxxxxxxx"
+};
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  const auth = firebase.auth();
-  const storage = firebase.storage();
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const auth = firebase.auth();
+const storage = firebase.storage();
 
-  const chatArea = document.getElementById('chatArea');
-  const messageInput = document.getElementById('messageInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const emojiBtn = document.getElementById('emojiBtn');
-  const emojiPicker = document.getElementById('emojiPicker');
-  const imageBtn = document.getElementById('imageBtn');
-  const imageInput = document.getElementById('imageInput');
+const chatArea = document.getElementById('chatArea');
+const messageInput = document.getElementById('messageInput');
+const sendBtn = document.getElementById('sendBtn');
+const emojiBtn = document.getElementById('emojiBtn');
+const emojiPicker = document.getElementById('emojiPicker');
+const imageBtn = document.getElementById('imageBtn');
+const imageInput = document.getElementById('imageInput');
 
-  // Create emoji picker element
-  const picker = document.createElement('emoji-picker');
-  emojiPicker.appendChild(picker);
+// Emoji picker
+const picker = document.createElement('emoji-picker');
+emojiPicker.appendChild(picker);
 
-  // Toggle emoji picker
-  emojiBtn.addEventListener('click', () => {
-    emojiPicker.classList.toggle('show');
-  });
+emojiBtn.addEventListener('click', () => {
+  emojiPicker.classList.toggle('show');
+});
 
-  // Insert emoji into input
-  picker.addEventListener('emoji-click', event => {
-    messageInput.value += event.detail.unicode;
-    messageInput.focus();
-  });
+picker.addEventListener('emoji-click', e => {
+  messageInput.value += e.detail.unicode;
+  messageInput.focus();
+});
 
-  let userName = prompt('Enter your name:');
-  if (!userName) userName = 'Guest';
-  const isAdmin = userName.toLowerCase() === 'admin'; // Note: Insecure; for demo only. In prod, use auth claims.
+// ────────────────────────────────────────────────
+//  Simple name + admin check (demo only – not secure)
+// ────────────────────────────────────────────────
+let userName = prompt('Enter your display name:')?.trim() || 'Guest';
+const ADMIN_PASSWORD = "teachmore2025"; // ← CHANGE THIS
+let isAdmin = false;
 
-  let currentUser;
+const adminAttempt = prompt('Admin password (leave blank if not admin):')?.trim();
+if (adminAttempt === ADMIN_PASSWORD) {
+  isAdmin = true;
+  userName = "Admin";
+}
 
-  // Anonymous auth
-  auth.signInAnonymously()
-    .then(userCredential => {
-      currentUser = userCredential.user;
-      loadMessages();
-    })
-    .catch(error => console.error('Auth error:', error));
+let currentUser;
 
-  function loadMessages() {
-    database.ref('messages').orderByChild('timestamp').limitToLast(50).on('child_added', snapshot => {
+// Anonymous login
+auth.signInAnonymously()
+  .then(cred => {
+    currentUser = cred.user;
+    loadMessages();
+  })
+  .catch(err => console.error(err));
+
+// ────────────────────────────────────────────────
+function loadMessages() {
+  database.ref('messages')
+    .orderByChild('timestamp')
+    .limitToLast(80)
+    .on('child_added', snapshot => {
       const msg = snapshot.val();
-      addMessage(snapshot.key, msg.type || 'text', msg.text || msg.url, msg.sender === userName, msg.sender, msg.readBy || [], msg.sender === 'Admin');
-      
-      // Mark as read if not already
-      if (msg.sender !== userName && !msg.readBy?.includes(currentUser.uid)) {
+      const isOutgoing = msg.sender === userName;
+      const isAdminMsg = msg.sender?.toLowerCase() === 'admin';
+
+      addMessage(
+        snapshot.key,
+        msg.type || 'text',
+        msg.text || msg.url || '',
+        isOutgoing,
+        msg.sender,
+        msg.readBy || [],
+        isAdminMsg
+      );
+
+      // Mark as read
+      if (!isOutgoing && !msg.readBy?.includes(currentUser.uid)) {
         database.ref(`messages/${snapshot.key}/readBy`).push(currentUser.uid);
       }
     });
 
-    database.ref('messages').on('child_changed', snapshot => {
-      // Update message UI for readBy changes (ticks)
-      const msgDiv = document.querySelector(`[data-key="${snapshot.key}"]`);
-      if (msgDiv) {
-        const timeSpan = msgDiv.querySelector('.time');
-        const msg = snapshot.val();
-        const isOutgoing = msg.sender === userName;
-        if (isOutgoing) {
-          timeSpan.innerHTML = `\( {getCurrentTime(msg.timestamp)} <span class="ticks"> \){getTicks(msg.readBy?.length || 0)}</span>`;
-        }
+  // Update read receipts
+  database.ref('messages').on('child_changed', snapshot => {
+    const msgDiv = document.querySelector(`[data-key="${snapshot.key}"]`);
+    if (!msgDiv) return;
+    const msg = snapshot.val();
+    if (msg.sender === userName) {
+      const timeEl = msgDiv.querySelector('.time');
+      if (timeEl) {
+        timeEl.innerHTML = `\( {getTime(msg.timestamp)} <span class="ticks"> \){getTicks(msg.readBy?.length || 0)}</span>`;
       }
-    });
-
-    database.ref('messages').on('child_removed', snapshot => {
-      const msgDiv = document.querySelector(`[data-key="${snapshot.key}"]`);
-      if (msgDiv) msgDiv.remove();
-    });
-  }
-
-  function addMessage(key, type, content, isOutgoing, name, readBy, isAdminMsg) {
-    const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message');
-    msgDiv.dataset.key = key;
-    if (isOutgoing) {
-      msgDiv.classList.add('outgoing');
-    } else {
-      msgDiv.classList.add('incoming');
-    }
-    if (isAdminMsg) {
-      msgDiv.classList.add('admin');
-    }
-
-    let html = '';
-    if (!isOutgoing && name && !isAdminMsg) {
-      html += `<span class="name">${name}</span>`;
-    }
-    if (type === 'image') {
-      html += `<div class="bubble ${isOutgoing ? 'outgoing' : 'incoming'} \( {isAdminMsg ? 'admin' : ''}"><img src=" \){content}" alt="Uploaded image"/></div>`;
-    } else {
-      html += `<div class="bubble ${isOutgoing ? 'outgoing' : 'incoming'} \( {isAdminMsg ? 'admin' : ''}"> \){content}</div>`;
-    }
-    html += `<span class="time">${getCurrentTime()} `;
-    if (isOutgoing) {
-      html += `<span class="ticks">${getTicks(readBy.length)}</span>`;
-    }
-    html += `</span>`;
-
-    if (isOutgoing || isAdmin) {
-      html += `<i class="fas fa-trash delete-btn" onclick="deleteMessage('\( {key}', ' \){name}')"></i>`;
-    }
-
-    msgDiv.innerHTML = html;
-    chatArea.appendChild(msgDiv);
-    chatArea.scrollTop = chatArea.scrollHeight;
-  }
-
-  function getCurrentTime(timestamp = Date.now()) {
-    const now = new Date(timestamp);
-    return now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-  }
-
-  function getTicks(readCount) {
-    if (readCount > 0) {
-      return '<i class="fas fa-check-double" style="color: #53bdeb;"></i>'; // Blue double if read by at least one
-    } else {
-      return '<i class="fas fa-check-double"></i>'; // Gray double (delivered)
-    }
-    // Single tick not shown after delivered; assume delivered once in DB
-  }
-
-  sendBtn.addEventListener('click', sendMessage);
-  messageInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      sendMessage();
     }
   });
 
-  function sendMessage() {
-    const text = messageInput.value.trim();
-    if (!text) return;
+  database.ref('messages').on('child_removed', snapshot => {
+    document.querySelector(`[data-key="${snapshot.key}"]`)?.remove();
+  });
+}
 
-    const msg = {
-      type: 'text',
-      text,
-      sender: userName,
-      timestamp: Date.now(),
-      readBy: []
-    };
+function addMessage(key, type, content, isOutgoing, sender, readBy, isAdminMsg) {
+  const div = document.createElement('div');
+  div.classList.add('message');
+  div.dataset.key = key;
 
-    messageInput.value = '';
-    emojiPicker.classList.remove('show');
+  if (isAdminMsg) div.classList.add('admin');
+  else if (isOutgoing) div.classList.add('outgoing');
+  else div.classList.add('incoming');
 
-    // Push to Firebase
-    database.ref('messages').push(msg);
+  let html = '';
+  if (!isOutgoing && sender && !isAdminMsg) {
+    html += `<span class="name">${sender}</span>`;
   }
 
-  // Image upload
-  imageBtn.addEventListener('click', () => {
-    imageInput.click();
+  const bubbleClass = `bubble \( {isOutgoing?'outgoing':'incoming'} \){isAdminMsg?' admin':''}`;
+
+  if (type === 'image') {
+    html += `<div class="\( {bubbleClass}"><img src=" \){content}" alt="image"/></div>`;
+  } else {
+    html += `<div class="\( {bubbleClass}"> \){content}</div>`;
+  }
+
+  html += `<span class="time">${getTime()} `;
+  if (isOutgoing) html += `<span class="ticks">${getTicks(readBy.length)}</span>`;
+  html += `</span>`;
+
+  if (isOutgoing || isAdmin) {
+    html += `<i class="fas fa-trash delete-btn" onclick="deleteMessage('\( {key}',' \){sender.replace(/'/g,"\\'")}')"></i>`;
+  }
+
+  div.innerHTML = html;
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function getTime(ts = Date.now()) {
+  return new Date(ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function getTicks(count) {
+  return count > 0
+    ? '<i class="fas fa-check-double" style="color:#53bdeb;"></i>'
+    : '<i class="fas fa-check-double"></i>';
+}
+
+function sendMessage() {
+  const text = messageInput.value.trim();
+  if (!text) return;
+
+  database.ref('messages').push({
+    type: 'text',
+    text,
+    sender: userName,
+    timestamp: Date.now(),
+    readBy: []
   });
 
-  imageInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  messageInput.value = '';
+  emojiPicker.classList.remove('show');
+}
 
-    const storageRef = storage.ref('images/' + file.name);
-    storageRef.put(file).then(snapshot => {
-      snapshot.ref.getDownloadURL().then(url => {
-        const msg = {
-          type: 'image',
-          url,
-          sender: userName,
-          timestamp: Date.now(),
-          readBy: []
-        };
-        database.ref('messages').push(msg);
+sendBtn.addEventListener('click', sendMessage);
+messageInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+// Image upload
+imageBtn.onclick = () => imageInput.click();
+
+imageInput.onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const ref = storage.ref('chat-images/' + Date.now() + '_' + file.name);
+  ref.put(file).then(snap => {
+    snap.ref.getDownloadURL().then(url => {
+      database.ref('messages').push({
+        type: 'image',
+        url,
+        sender: userName,
+        timestamp: Date.now(),
+        readBy: []
       });
     });
-  });
+  }).catch(err => alert('Upload failed: ' + err.message));
+};
 
-  window.deleteMessage = function(key, senderName) {
-    if (confirm('Delete this message?')) {
-      if (userName === senderName || isAdmin) {
-        database.ref('messages/' + key).remove();
-      } else {
-        alert('You can only delete your own messages.');
-      }
-    }
+window.deleteMessage = (key, sender) => {
+  if (!confirm('Delete this message?')) return;
+  if (userName === sender || isAdmin) {
+    database.ref('messages/' + key).remove();
+  } else {
+    alert("You can only delete your own messages (or you are not admin).");
   }
+};
 
-  // Focus input
-  messageInput.focus();
+messageInput.focus();
 </script>
-
 </body>
 </html>
